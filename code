@@ -1,0 +1,48 @@
+import random
+from github import Github
+
+def get_random_quote():
+    """
+    Function to get a random quote from a list of quotes.
+
+    Returns:
+        str: A randomly selected quote.
+    """
+    quotes = [
+        "The only way to do great work is to love what you do. - Steve Jobs",
+        "Innovation distinguishes between a leader and a follower. - Steve Jobs",
+        "Your time is limited, don't waste it living someone else's life. - Steve Jobs",
+        "Strive not to be a success, but rather to be of value. - Albert Einstein",
+        "Imagination is more important than knowledge. - Albert Einstein",
+        "Life is what happens when you're busy making other plans. - John Lennon"
+    ]
+    return random.choice(quotes)
+
+# Replace 'YOUR_GITHUB_USERNAME' and 'YOUR_GITHUB_ACCESS_TOKEN' with your GitHub credentials.
+github_username = 'YOUR_GITHUB_USERNAME'
+github_access_token = 'YOUR_GITHUB_ACCESS_TOKEN'
+
+# Create a GitHub instance using your access token.
+g = Github(github_access_token)
+
+# Replace 'YOUR_REPOSITORY_NAME' with the name of your GitHub repository.
+repo_name = 'YOUR_REPOSITORY_NAME'
+user = g.get_user()
+
+# Get or create the repository.
+repo = None
+for repository in user.get_repos():
+    if repository.name == repo_name:
+        repo = repository
+        break
+
+if repo is None:
+    repo = user.create_repo(repo_name)
+
+# Get a random quote.
+quote = get_random_quote()
+
+# Create a new file in the repository with the random quote.
+file_path = 'quotes.txt'
+file_content = f"Random Quote: {quote}"
+repo.create_file(file_path, "Add a random quote", file_content, branch="main")
